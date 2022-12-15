@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <stdint.h>
@@ -23,7 +25,7 @@ public:
             if (i < n - 1)
                 std::cout << " ";
         }
-        std::cout << "]";
+        std::cout << "]" << std::endl;
     }
 
     const uint32_t get_collision_number() {
@@ -63,6 +65,11 @@ public:
         collision_number = new_collision_number;
     }
 
+    /*
+     * Recalculate current numberof collisions. 
+     *
+     * Complexity: O(n^2)
+     */
     uint32_t recalculate_collisions() const {
         uint32_t collisions = 0;
         for (size_t i = 0; i < n; ++i) {
