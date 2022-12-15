@@ -19,3 +19,31 @@ std::pair<size_t, size_t> get_random_pair(size_t n) {
 double get_random_double() {
     return (double)rand() / (double)RAND_MAX;
 }
+
+uint32_t factorial(uint32_t n) {
+    uint32_t result = 1;
+    while(--n) {
+        result *= (n + 1);
+    }
+    return result;
+}
+
+/*
+ * Return a vector with num+1 elements, where:
+ * vector[0] == 0
+ * vector[1] == min_el
+ * vector.bacK() == max_el
+ * for i > 1, i < vector.size()
+ *   vector[i] / vector[i - 1] = const
+ * So elements (apart from 0) form geometric sequence 
+ */
+std::vector<double> fill_with_geometric(uint32_t num, double min_el, double max_el) {
+    double r = pow(max_el / min_el, (double)1 / (double)(num - 1));
+
+    std::vector<double> result = {0};
+    for (uint32_t i = 0; i < num; ++i) {
+        result.push_back(min_el);
+        min_el *= r;
+    }
+    return result;
+}

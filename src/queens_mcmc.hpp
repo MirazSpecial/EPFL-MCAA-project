@@ -9,8 +9,6 @@
 #include "utils.hpp"
 
 bool step(Permutation& permutation, double beta);
-Permutation find_solution(uint32_t n);
-
 
 
 /*
@@ -39,27 +37,70 @@ bool step(Permutation& permutation, double beta) {
     }
 }
 
-Permutation find_solution(uint32_t n) {
+/*
+ * Performes sampling from given distribution using Metropolis algorithm.
+ * Does up to 'max_iterations' steps in Markov chain, and returns chain after those steps.
+ * 
+ * The default beta value is a result of observation, that greedy algorithms for finding
+ * solution of n-queens problem with loss function defined in our way, is actually correct.
+ * So we can set beta to infinity and the solution is still always found.
+ */
+Permutation sample_from_pi_b(uint32_t n, 
+                             double beta = (1<<10), 
+                             uint32_t max_iterations = UINT32_MAX,
+                             bool return_minimum = true) {
     Permutation permutation(n);
-    uint32_t iteration = 0;
-    const uint32_t reporting_step = 10000;
 
-    /* Experimentally we found out, that a greedy solution works for
-       our loss function, so we can start with beta infinity */
-    double beta = 1 << 10; /* Experimentally we found out*/
-
-    while (true) {
-        if (permutation.get_collision_number() == 0) {
-            std::cout << "Proper permutation found in " << iteration << " iterations." << std::endl;
+    for (uint32_t iteration = 0; iteration < max_iterations; ++iteration) {
+        if (return_minimum && permutation.get_collision_number() == 0) {
             return permutation;
         }
-        if (iteration % reporting_step == 0) {
-            std::cout << "Iteration: " << iteration << " collisions: "
-                      << permutation.get_collision_number() << std::endl;
-        }
-
         step(permutation, beta);
-        iteration++;
     }
 
+    return permutation;
+}
+
+/*
+ * Function samples m times (samples by performing Metropolis algorithm, with 
+ * 'max_iterations' iterations) from underlying distribution, and using those 
+ * samples estimates the ration between 'z_beta_big' and 'z_beta_small' 
+ */
+double estimate_z_beta_ratio(uint32_t n,
+                             double beta_big,
+                             double beta_small,
+                             uint32_t m,
+                             uint32_t max_iterations) {
+
+    double result = 0;
+    for (uint32_t i = 0; i < m; ++i) {
+        Permutation sample = sample_from_pi_b(n, beta_small, max_iterations, false);
+        double value = exp(-(beta_big - beta_small) * sample.get_collision_number());
+        result += value / m;
+    }
+    return result;
+}
+
+/*
+ * Function to estimate number of proper permutations (queen placements).
+ */
+double estimate_z_beta_infinity(uint32_t n,
+                                const std::vector<double>& betas,
+                                uint32_t m,
+                                uint32_t max_iterations,
+                                bool verbose = false) {
+    
+    double big_z_beta_ratio = 1;
+    for (size_t i = 0; i < betas.size() - 1; ++i) {
+        double ratio = estimate_z_beta_ratio(n, betas[i + 1], betas[i], m, max_iterations);
+        big_z_beta_ratio *= ratio;
+        
+        if (verbose) {
+            std::cout << "Ratio between beta " << betas[i + 1] << " and beta " << betas[i] << " is: " 
+                      << ratio << std::endl;
+        }
+    }
+
+    double z_beta0 = factorial(n);
+    return big_z_beta_ratio * z_beta0;
 }

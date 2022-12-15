@@ -13,7 +13,7 @@ class Permutation {
 public:
 
     Permutation(size_t n): n(n), collision_number(n * (n - 1) / 2) {
-        for (uint32_t i = 0; i <= n; ++i) {
+        for (uint32_t i = 0; i < n; ++i) {
             data.push_back(i);
         }
     }
@@ -79,6 +79,10 @@ public:
             }
         }
         return collisions;
+    }
+
+    bool is_equal_to_vector(std::vector<uint32_t> vec) {
+        return data == vec;
     }
 
 private:
