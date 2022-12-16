@@ -47,3 +47,20 @@ std::vector<double> fill_with_geometric(uint32_t num, double min_el, double max_
     }
     return result;
 }
+
+/**
+ * Return a vector with num+1 elements, where:
+ * vector[0] == 0
+ * for i > 0, i < vector.size()
+ *  vector[i] = vector[i - 1] + incr
+ * So elements (apart from 0) form arithmetic sequence
+*/
+std::vector<double> fill_with_arithmetic(uint32_t num, double max_el) {
+    double incr = max_el / num;
+    std::vector<double> result = {0};
+    for (size_t i = 0; i < num; i++)
+    {
+        result.push_back(result.back() + incr);
+    }
+    return result;
+}

@@ -4,6 +4,8 @@
 #include <vector>
 #include <stdint.h>
 #include <cstdlib>
+#include <algorithm>
+#include <chrono>
 
 class Permutation {
     size_t n;
@@ -12,10 +14,13 @@ class Permutation {
 
 public:
 
-    Permutation(size_t n): n(n), collision_number(n * (n - 1) / 2) {
+    Permutation(size_t n): n(n) {
         for (uint32_t i = 0; i < n; ++i) {
             data.push_back(i);
         }
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        auto rng = std::default_random_engine{seed};
+        std::shuffle(std::begin(data), std::end(data), rng);
     }
 
     const void print_permutation() {
@@ -30,6 +35,10 @@ public:
 
     const uint32_t get_collision_number() {
         return collision_number;
+    }
+
+    const void set_collision_number(uint32_t new_collision_number) {
+        collision_number = new_collision_number;
     }
 
     const size_t get_n() {

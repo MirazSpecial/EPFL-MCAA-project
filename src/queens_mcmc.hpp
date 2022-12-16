@@ -50,14 +50,19 @@ Permutation sample_from_pi_b(uint32_t n,
                              uint32_t max_iterations = UINT32_MAX,
                              bool return_minimum = true) {
     Permutation permutation(n);
+    permutation.set_collision_number(permutation.recalculate_collisions());
 
     for (uint32_t iteration = 0; iteration < max_iterations; ++iteration) {
-        if (return_minimum && permutation.get_collision_number() == 0) {
-            return permutation;
+        if (return_minimum) {
+            if (permutation.get_collision_number() == 0) {
+                std::cout << "Found solution in " << iteration << " iterations" << std::endl;
+                std::cout << "Beta is equal to " << beta << std::endl;
+                return permutation;
+            }
+            beta *= pow(0.99, -1);
         }
         step(permutation, beta);
     }
-
     return permutation;
 }
 
