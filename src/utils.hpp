@@ -47,3 +47,18 @@ std::vector<double> fill_with_geometric(uint32_t num, double min_el, double max_
     }
     return result;
 }
+
+/*
+ * Calculates beta max (for second task)
+ * depending on n. This is estimated to be the optimal
+ * beta max during preprocessing
+ */
+double calculate_max_beta(uint32_t n) {
+    uint32_t n_thresholds[] = {13, 15, 17, 19};
+    double betas[] = {5, 1.6, 0.8, 0.5, 0.1};
+    for (uint32_t i = 0; i < 4; ++i) {
+        if (n < n_thresholds[i]) 
+            return betas[i];
+    }
+    return betas[4];
+}
