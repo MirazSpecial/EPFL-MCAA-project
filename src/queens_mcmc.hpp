@@ -4,6 +4,7 @@
 #include <time.h>
 #include <cmath>
 #include <random>
+#include <algorithm>
 
 #include "permutations.hpp"
 #include "utils.hpp"
@@ -59,6 +60,8 @@ Permutation sample_from_pi_b(uint32_t n,
                 std::cout << "Beta is equal to " << beta << std::endl;
                 return permutation;
             }
+        }
+        if (iteration > std::min((int)max_iterations / 2, 1000)) {
             beta *= pow(0.99, -1);
         }
         step(permutation, beta);
