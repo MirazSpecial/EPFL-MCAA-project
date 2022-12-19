@@ -19,13 +19,12 @@ public:
     }
 
     const void print_permutation() {
-        std::cout << "[";
         for (size_t i = 0; i < n; ++i) {
             std::cout << data[i];
             if (i < n - 1)
                 std::cout << " ";
         }
-        std::cout << "]" << std::endl;
+        std::cout << std::endl;
     }
 
     const uint32_t get_collision_number() {

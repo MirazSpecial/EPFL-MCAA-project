@@ -16,10 +16,12 @@ void example_1() {
     n = 100;
     Permutation permutation_100 = sample_from_pi_b(
         n, beta, beta_increment, beta_step).first;
+    permutation_100.print_permutation();
 
     n = 1000;
     Permutation permutation_1000 = sample_from_pi_b(
         n, beta, beta_increment, beta_step).first;
+    permutation_1000.print_permutation();
 }
 
 void example_2(uint32_t n) {
